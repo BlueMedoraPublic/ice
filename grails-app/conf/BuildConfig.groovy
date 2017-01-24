@@ -66,7 +66,7 @@ grails.project.dependency.resolution = {
 
         compile(
                 // Amazon Web Services programmatic interface
-                'com.amazonaws:aws-java-sdk:1.9.26',
+                'com.amazonaws:aws-java-sdk:1.9.40',
 
                 // Used by common-logging
                 'org.apache.httpcomponents:httpclient:4.4',
@@ -87,7 +87,7 @@ grails.project.dependency.resolution = {
                 'javax.mail:javax.mail-api:1.5.2',
 
                 // Better date API
-                'joda-time:joda-time:2.7',
+                'joda-time:joda-time:2.9.7',
 
                 'net.sourceforge.javacsv:javacsv:2.0',
 
