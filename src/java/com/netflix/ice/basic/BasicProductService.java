@@ -31,6 +31,8 @@ public class BasicProductService implements ProductService {
     private static ConcurrentMap<String, Product> productsByAwsName = Maps.newConcurrentMap();
     private static ConcurrentMap<String, Product> productsByName = Maps.newConcurrentMap();
 
+    public static final BasicProduct api_gateway = new BasicProduct(Product.api_gateway, "API Gateway");
+    public static final BasicProduct athena = new BasicProduct(Product.athena, "Athena");
     public static final BasicProduct cloudfront = new BasicProduct(Product.cloudfront, "CloudFront");
     public static final BasicProduct cloudhsm = new BasicProduct(Product.cloudhsm, "CloudHSM");
     public static final BasicProduct cloudwatch = new BasicProduct(Product.cloudwatch, "CloudWatch");
@@ -41,12 +43,20 @@ public class BasicProductService implements ProductService {
     public static final BasicProduct ebs = new BasicProduct(Product.ebs, "ebs");
     public static final BasicProduct ec2 = new BasicProduct(Product.ec2, "Elastic Compute Cloud");
     public static final BasicProduct ec2_instance = new BasicProduct(Product.ec2_instance, "ec2_instance");
+    public static final BasicProduct ecr = new BasicProduct(Product.ecr, "EC2 Container Registry (ECR)");
     public static final BasicProduct eip = new BasicProduct(Product.eip, "eip");
     public static final BasicProduct elasticache = new BasicProduct(Product.elasticache, "ElastiCache");
+    public static final BasicProduct elasticsearch = new BasicProduct(Product.elasticsearch, "Elasticsearch Service");
     public static final BasicProduct emr = new BasicProduct(Product.emr, "Elastic MapReduce");
     public static final BasicProduct glacier = new BasicProduct(Product.glacier, "Glacier");
+    public static final BasicProduct iot = new BasicProduct(Product.iot, "IoT");
+    public static final BasicProduct kinesis = new BasicProduct(Product.kinesis, "Kinesis");
+    public static final BasicProduct kms = new BasicProduct(Product.kms, "Key Management Service");
+    public static final BasicProduct lambda = new BasicProduct(Product.lambda, "Lambda");
+    public static final BasicProduct monitor = new BasicProduct(Product.monitor, "monitor");
     public static final BasicProduct rds = new BasicProduct(Product.rds, "RDS Service");
     public static final BasicProduct redshift = new BasicProduct(Product.redshift, "Redshift");
+    public static final BasicProduct registrar = new BasicProduct(Product.registrar, "Registrar");
     public static final BasicProduct route53 = new BasicProduct(Product.route53, "Route 53");
     public static final BasicProduct s3 = new BasicProduct(Product.s3, "Simple Storage Service");
     public static final BasicProduct simpledb = new BasicProduct(Product.simpledb, "SimpleDB");
@@ -56,9 +66,9 @@ public class BasicProductService implements ProductService {
     public static final BasicProduct storage_gateway = new BasicProduct(Product.storage_gateway, "Storage Gateway");
     public static final BasicProduct sws = new BasicProduct(Product.sws, "Simple Workflow Service");
     public static final BasicProduct vpc = new BasicProduct(Product.vpc, "Virtual Private Cloud");
-    public static final BasicProduct monitor = new BasicProduct(Product.monitor, "monitor");
+    public static final BasicProduct workspaces = new BasicProduct(Product.workspaces, "Workspaces");
 
-    private static BasicProduct[] products = new BasicProduct[]{cloudfront, cloudhsm, cloudwatch, data_pipeline, data_transfer, direct_connect, dynamodb, ebs, ec2, ec2_instance, eip, elasticache, emr, glacier, rds, redshift, route53, s3, simpledb, ses, sns, sqs, storage_gateway, sws, vpc};
+    private static BasicProduct[] products = new BasicProduct[]{api_gateway, athena, cloudfront, cloudhsm, cloudwatch, data_pipeline, data_transfer, direct_connect, dynamodb, ebs, ec2, ec2_instance, ecr, eip, elasticache, elasticsearch, emr, glacier, iot, kinesis, kms, lambda, monitor, rds, redshift, route53, s3, simpledb, ses, sns, sqs, storage_gateway, sws, vpc, workspaces};
 
     static {
         for (BasicProduct product: products) {
