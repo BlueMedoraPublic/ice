@@ -144,7 +144,7 @@ public class BasicDataManager extends Poller implements DataManager {
             return AwsUtils.downloadFileIfChanged(config.workS3BucketName, config.workS3BucketPrefix, file, 0);
         }
         catch (Exception e) {
-            logger.error("error downloading " + file, e);
+            logger.error("error downloading " + file, e.getMessage());
             return false;
         }
     }
