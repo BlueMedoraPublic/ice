@@ -20,20 +20,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Properties;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
+import org.opensaml.messaging.decoder.MessageDecodingException;
 
-import org.pac4j.saml.credentials.Saml2Credentials;
-import org.pac4j.saml.profile.Saml2Profile;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.saml.credentials.SAML2Credentials;
+import org.pac4j.saml.profile.SAML2Profile;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.saml.client.Saml2Client;
-import org.pac4j.core.context.J2ERequestContext;
+import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.xml.XMLObject;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.core.xml.XMLObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class Saml extends LoginMethod {
     private static final Logger logger = LoggerFactory.getLogger(Saml.class);
 
     private final SamlConfig config;
-    private final Saml2Client client = new Saml2Client();
+    private final SAML2Client client;
 
     public String propertyName(String name) {
        return SAML_PREFIX + "." + name;
@@ -74,15 +75,19 @@ public class Saml extends LoginMethod {
     public Saml(Properties properties) throws LoginMethodException {
         super(properties);
         config = new SamlConfig(properties);
+        SAML2ClientConfiguration client_config = new SAML2ClientConfiguration();
+
         if (config.serviceIdentifier != null) {
-            client.setSpEntityId(config.serviceIdentifier);
+            client_config.setServiceProviderEntityId(config.serviceIdentifier);
         }
-        client.setIdpMetadataPath(config.idpMetadataPath);
+        client_config.setIdentityProviderMetadataPath(config.idpMetadataPath);
+        client_config.setKeystorePath(config.keystore);
+        client_config.setKeystorePassword(config.keystorePassword);
+        client_config.setPrivateKeyPassword(config.keyPassword);
+        client_config.setMaximumAuthenticationLifetime(Integer.parseInt(config.maximumAuthenticationLifetime));
+
+        client = new SAML2Client(client_config);
         client.setCallbackUrl(config.signInUrl);
-        client.setKeystorePath(config.keystore);
-        client.setKeystorePassword(config.keystorePassword);
-        client.setPrivateKeyPassword(config.keyPassword);
-        client.setMaximumAuthenticationLifetime(Integer.parseInt(config.maximumAuthenticationLifetime));
     }
 
     public LoginResponse processLogin(HttpServletRequest request, HttpServletResponse response) throws LoginMethodException {
@@ -92,16 +97,16 @@ public class Saml extends LoginMethod {
         LoginResponse lr = new LoginResponse();
 
         SamlHttpServletRequest shsr = new SamlHttpServletRequest(request, config.signInUrl);
-        final WebContext context = new J2ERequestContext(shsr);
+        final WebContext context = new J2EContext(shsr, response);
         client.setCallbackUrl(config.signInUrl);
         boolean redirect = false;
         try {
-            Saml2Credentials credentials = client.getCredentials(context);
-            Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
+            SAML2Credentials credentials = client.getCredentials(context);
+            SAML2Profile saml2Profile = client.getUserProfile(credentials, context);
             processAssertion(iceSession, credentials, lr);
         } catch (NullPointerException npe) {
             redirect = true;
-        } catch (RequiresHttpAction rha) {
+        } catch (HttpAction rha) {
             redirect = true;
         } catch (Exception e) {
             redirect = true;
@@ -115,10 +120,10 @@ public class Saml extends LoginMethod {
                 } else {
                     //try redirect using Pac4j library.  Not sure if this will work.
                     final WebContext redirect_context = new J2EContext(shsr, response);
-                    client.redirect(redirect_context, false, false);
+                    client.redirect(redirect_context);
                     lr.responded = true;
                 }
-            } catch (RequiresHttpAction rhae) {
+            } catch (HttpAction rhae) {
                 logger.error(rhae.toString());
             }
             catch (NullPointerException npe) {
@@ -133,7 +138,7 @@ public class Saml extends LoginMethod {
     /**
      * Process an assertion and setup our session attributes
      */
-    private void processAssertion(IceSession iceSession, Saml2Credentials credentials, LoginResponse lr) throws LoginMethodException {
+    private void processAssertion(IceSession iceSession, SAML2Credentials credentials, LoginResponse lr) throws LoginMethodException {
         boolean foundAnAccount=false;
         iceSession.voidSession();
 

@@ -74,10 +74,9 @@ grails.project.dependency.resolution = {
                 'commons-collections:commons-collections:3.2.1',
                 'org.apache.commons:commons-io:1.3.2',
 
-
                 // Easier Java from of the Apache Foundation
                 'commons-lang:commons-lang:2.6',
-     
+
                 // Better Zip Support
                 'org.apache.commons:commons-compress:1.9',
 
@@ -97,8 +96,8 @@ grails.project.dependency.resolution = {
                 'jfree:jfreechart:1.0.13',
                 'org.json:json:20090211',
                 'org.mapdb:mapdb:1.0.7',
-                'org.pac4j:pac4j-core:1.6.0',
-                'org.pac4j:pac4j-saml:1.6.0'
+                'org.pac4j:pac4j-core:1.9.6',
+                'org.pac4j:pac4j-saml:1.9.6'
         ) { // Exclude superfluous and dangerous transitive dependencies
             excludes(
                     // Some libraries bring older versions of JUnit as a transitive dependency and that can interfere
@@ -106,13 +105,13 @@ grails.project.dependency.resolution = {
                     'junit',
 
                     'mockito-core',
-                    'xercesImpl', 
+                    'xercesImpl',
                     'jcl-over-slf4j',
                     'log4j-over-slf4j'
             )
         }
         compile(
-                'org.opensaml:opensaml:2.6.1'
+                'org.opensaml:opensaml-saml-api:3.2.0'
         ) {
             excludes 'xercesImpl'
         }

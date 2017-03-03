@@ -29,9 +29,9 @@ import java.io.StringWriter;
 import java.io.IOException;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.saml.client.Saml2Client;
-import org.opensaml.common.xml.SAMLConstants;
-
+import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.opensaml.saml.common.xml.SAMLConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class SamlMetaData extends LoginMethod {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SamlConfig config;
-    private final Saml2Client client = new Saml2Client();
+    private final SAML2Client client;
 
     public String propertyName(String name) {
         return SAML_PREFIX + "." + name;
@@ -54,19 +54,23 @@ public class SamlMetaData extends LoginMethod {
     public SamlMetaData(Properties properties) throws LoginMethodException {
         super(properties);
         config = new SamlConfig(properties);
+        SAML2ClientConfiguration client_config = new SAML2ClientConfiguration();
+
         if (config.serviceIdentifier != null) {
-            client.setSpEntityId(config.serviceIdentifier);
+            client_config.setServiceProviderEntityId(config.serviceIdentifier);
         }
-        client.setIdpMetadataPath(config.idpMetadataPath);
+        client_config.setIdentityProviderMetadataPath(config.idpMetadataPath);
+        client_config.setKeystorePath(config.keystore);
+        client_config.setKeystorePassword(config.keystorePassword);
+        client_config.setPrivateKeyPassword(config.keyPassword);
+
+        client = new SAML2Client(client_config);
         client.setCallbackUrl(config.signInUrl);
-        client.setKeystorePath(config.keystore);
-        client.setKeystorePassword(config.keystorePassword);
-        client.setPrivateKeyPassword(config.keyPassword);
     }
 
     public LoginResponse processLogin(HttpServletRequest request, HttpServletResponse response) throws LoginMethodException {
         LoginResponse lr = new LoginResponse();
-        lr.renderData = client.printClientMetadata();
+        lr.renderData = client.getIdentityProviderMetadataResolver().getMetadata();
 ;
         lr.contentType = "application/samlmetadata+xml";
         return lr;
