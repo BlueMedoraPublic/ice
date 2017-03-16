@@ -87,7 +87,7 @@ public class Saml extends LoginMethod {
         client_config.setMaximumAuthenticationLifetime(Integer.parseInt(config.maximumAuthenticationLifetime));
 
         client = new SAML2Client(client_config);
-        //client.setCallbackUrl(config.signInUrl);
+        client.setCallbackUrl(config.signInUrl);
     }
 
     public LoginResponse processLogin(HttpServletRequest request, HttpServletResponse response) throws LoginMethodException {
@@ -98,7 +98,6 @@ public class Saml extends LoginMethod {
 
         SamlHttpServletRequest shsr = new SamlHttpServletRequest(request, config.signInUrl);
         final WebContext context = new J2EContext(shsr, response);
-        //client.setCallbackUrl(config.signInUrl);
         boolean redirect = false;
         try {
             SAML2Credentials credentials = client.getCredentials(context);
@@ -115,9 +114,11 @@ public class Saml extends LoginMethod {
             try {
                 logger.info("Redirect user to SSO");
                 if (config.singleSignOnUrl != null) {
+                    logger.debug("using SSO URL");
                     //redirect to SSO using a static URL
                     lr.redirectTo=config.singleSignOnUrl;
                 } else {
+                    logger.debug("attempting context redirect");
                     //try redirect using Pac4j library.  Not sure if this will work.
                     final WebContext redirect_context = new J2EContext(shsr, response);
                     client.redirect(redirect_context);
