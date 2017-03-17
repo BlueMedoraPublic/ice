@@ -104,13 +104,13 @@ public class Saml extends LoginMethod {
             SAML2Profile saml2Profile = client.getUserProfile(credentials, context);
             processAssertion(iceSession, credentials, lr);
         } catch (NullPointerException npe) {
-            logger.info(npe);
+            logger.info("NPE: ", npe);
             redirect = true;
         } catch (HttpAction rha) {
-            logger.info(rha);
+            logger.info("HTTPAction: ", rha);
             redirect = true;
         } catch (Exception e) {
-            logger.info(e);
+            logger.info("Exception: ", e);
             redirect = true;
         }
         if (redirect) {
