@@ -104,21 +104,22 @@ public class Saml extends LoginMethod {
             SAML2Profile saml2Profile = client.getUserProfile(credentials, context);
             processAssertion(iceSession, credentials, lr);
         } catch (NullPointerException npe) {
+            logger.info(npe);
             redirect = true;
         } catch (HttpAction rha) {
+            logger.info(rha);
             redirect = true;
         } catch (Exception e) {
+            logger.info(e);
             redirect = true;
         }
         if (redirect) {
             try {
                 logger.info("Redirect user to SSO");
                 if (config.singleSignOnUrl != null) {
-                    logger.debug("using SSO URL");
                     //redirect to SSO using a static URL
                     lr.redirectTo=config.singleSignOnUrl;
                 } else {
-                    logger.debug("attempting context redirect");
                     //try redirect using Pac4j library.  Not sure if this will work.
                     final WebContext redirect_context = new J2EContext(shsr, response);
                     client.redirect(redirect_context);
