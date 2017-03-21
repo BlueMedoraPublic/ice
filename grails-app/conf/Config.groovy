@@ -89,6 +89,7 @@ log4j = {
     warn 'org.mortbay.log'
 
     root {
-        info()
+        //info()
+        debug()
     }
 }
