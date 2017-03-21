@@ -85,7 +85,6 @@ public class Saml extends LoginMethod {
         client_config.setKeystorePassword(config.keystorePassword);
         client_config.setPrivateKeyPassword(config.keyPassword);
         client_config.setMaximumAuthenticationLifetime(Integer.parseInt(config.maximumAuthenticationLifetime));
-        client_config.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
 
         client = new SAML2Client(client_config);
         client.setCallbackUrl(config.signInUrl);
