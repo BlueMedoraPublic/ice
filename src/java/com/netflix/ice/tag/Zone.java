@@ -96,6 +96,7 @@ public class Zone extends Tag {
 
         zonesByName.put(AP_NORTHEAST_2A.name, AP_NORTHEAST_2A);
         zonesByName.put(AP_NORTHEAST_2B.name, AP_NORTHEAST_2B);
+	zonesByName.put(AP_NORTHEAST_2C.name, AP_NORTHEAST_2C);
 
         zonesByName.put(AP_SOUTH_1A.name, AP_SOUTH_1A);
         zonesByName.put(AP_SOUTH_1B.name, AP_SOUTH_1B);

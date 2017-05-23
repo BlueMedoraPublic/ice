@@ -174,6 +174,7 @@ public class BasicReservationService extends Poller implements ReservationServic
                     // Unknown Zone
                     if (Zone.getZone(offer.getAvailabilityZone()) == null) {
                         logger.error("No Zone for " + offer.getAvailabilityZone());
+			continue;
                     } else {
                         hasNewPrice = setPrice(utilization, currentTime, Zone.getZone(offer.getAvailabilityZone()).region, usageType,
                                 offer.getFixedPrice(), hourly) || hasNewPrice;
